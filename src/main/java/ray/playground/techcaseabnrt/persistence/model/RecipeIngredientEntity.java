@@ -12,6 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 public class RecipeIngredientEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "recipe_ingredient_id")
     private Long id;
 
@@ -21,7 +22,7 @@ public class RecipeIngredientEntity {
     @JoinColumn(name = "recipe_id")
     private RecipeEntity recipe;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ingredient_id")
     private IngredientEntity ingredient;
 
