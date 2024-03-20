@@ -1,0 +1,59 @@
+### user login
+POST {{host}}/auth0/login
+Content-Type: application/json
+
+{
+  "username":"ruben.timmermans@live.nl",
+  "password": "Dinges123"
+}
+
+> {%
+
+ client.global.set("accessToken", response.body.jwtToken)
+
+%}
+
+### admin login
+POST {{host}}/auth0/login
+Content-Type: application/json
+
+{
+  "username":"r.anthony.t@outlook.com",
+  "password": "@_n:]Tkj4#VS&NJ"
+}
+
+> {%
+
+ client.global.set("accessToken", response.body.jwtToken)
+
+%}
+
+
+### add recipe
+POST {{host}}/recipes/createRecipe
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "name": "yuk",
+    "ingredients": [
+        {
+            "name":"carrot",
+            "ingredient": {
+                "name": "carrot"
+            },
+            "quantity": {
+                "quantityType": "ABSOLUTE",
+                "amount":1,
+                "units": "none"
+            }
+        }
+    ],
+    "dishType": "VEGAN",
+    "servings": 1,
+    "instructions": "dont cook it"
+}
+
+### remove user
+DELETE {{host}}/admin/removeUser/1
+Authorization: Bearer {{accessToken}}

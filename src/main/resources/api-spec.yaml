@@ -1,0 +1,375 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0-0
+  title: recipe api
+  description: api for management of recipes of users
+
+servers:
+  - url: /auth0
+
+
+security:
+  - bearerAuth: [ ]
+
+paths:
+  /login:
+    post:
+      description: "login an auth0 user"
+      operationId: "Authenticate"
+      tags:
+        - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Auth0LoginRequest'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Auth0LoginResponse'
+        '405':
+          description: Invalid input
+        '400':
+          description: bad request
+        '404':
+          description: not found
+        '500':
+          description: internal server error
+
+  /recipes/getRecipe/{recipeId}:
+    get:
+      description: "get a recipe by its id"
+      operationId: "get a recipe by id"
+      parameters:
+        - $ref: '#/components/parameters/recipeIdParam'
+      tags:
+        - Recipes
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+        '405':
+          description: Invalid input
+        '400':
+          description: bad request
+        '404':
+          description: not found
+        '500':
+          description: internal server error
+  /recipes/getRecipes:
+    get:
+      description: "get recipes by filters"
+      operationId: "get recipes"
+      parameters:
+        - in: query
+          name: dishType
+          schema:
+            $ref: '#/components/schemas/DishType'
+          description: whether the recipe is vegetarian or not
+        - in: query
+          name: numberOfServings
+          schema:
+            type: integer
+          description: number of servings of recipe
+        - in: query
+          name: text
+          schema:
+            type: string
+          description: filter for certain words/strings in instructions
+        - in: query
+          name: ingredients
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/RecipeIngredient'
+      tags:
+        - Recipes
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+        '405':
+          description: Invalid input
+        '400':
+          description: bad request
+        '404':
+          description: not found
+        '500':
+          description: internal server error
+  /recipes/updateRecipe:
+    put:
+      description: "update a recipe"
+      operationId: "update recipe"
+      tags:
+        - Recipes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+      responses:
+        '200':
+          description: successful operation
+        '405':
+          description: Invalid input
+        '400':
+          description: bad request
+        '404':
+          description: not found
+        '500':
+          description: internal server error
+  /recipes/createRecipe:
+    post:
+      description: "create a recipe"
+      operationId: "create recipe"
+      tags:
+        - Recipes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+        '405':
+          description: Invalid input
+        '400':
+          description: bad request
+        '404':
+          description: not found
+        '500':
+          description: internal server error
+  /recipes/deleteRecipe/{recipeId}:
+    delete:
+      description: "remove a recipe"
+      operationId: "remove recipe"
+      tags:
+        - Recipes
+      parameters:
+        - $ref: '#/components/parameters/recipeIdParam'
+      responses:
+        '200':
+          description: successful operation
+        '405':
+          description: Invalid input
+        '400':
+          description: bad request
+        '404':
+          description: not found
+        '500':
+          description: internal server error
+  /users/addFavoriteRecipe:
+    post:
+      description: "add a recipe to the users favorites"
+      operationId: "add favorite recipe"
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FavoriteRecipeRequest'
+      responses:
+        '200':
+          description: successful operation
+        '405':
+          description: Invalid input
+        '400':
+          description: bad request
+        '404':
+          description: not found
+        '500':
+          description: internal server error
+  /users/removeFavoriteRecipe:
+    post:
+      description: "add a recipe to the users favorites"
+      operationId: "remove favorite recipe"
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FavoriteRecipeRequest'
+      responses:
+        '200':
+          description: successful operation
+        '405':
+          description: Invalid input
+        '400':
+          description: bad request
+        '404':
+          description: not found
+        '500':
+          description: internal server error
+  /admin/removeUser/{userId}:
+    delete:
+      description: "delete a user as an admin"
+      operationId: "delete user"
+      tags:
+        - Users
+      parameters:
+        - $ref: '#/components/parameters/userIdParam'
+      responses:
+        '200':
+          description: successful operation
+        '405':
+          description: Invalid input
+        '400':
+          description: bad request
+        '404':
+          description: not found
+        '500':
+          description: internal server error
+
+components:
+  parameters:
+    recipeIdParam:
+      in: path
+      required: true
+      name: recipeId
+      schema:
+        type: long
+    userIdParam:
+      in: path
+      required: true
+      name: userId
+      schema:
+        type: long
+    # below isnt used yet,
+    ingredientIdParam:
+      in: path
+      required: true
+      name: ingredientId
+      schema:
+        type: long
+    recipeIngredientParam:
+      in: path
+      required: true
+      name: recipeIngredientId
+      schema:
+        type: long
+  schemas:
+    Recipe:
+      type: object
+      properties:
+        id:
+          type: long
+        name:
+          type: string
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecipeIngredient'
+        createdBy:
+          $ref: '#/components/schemas/User'
+        dishType:
+          $ref: '#/components/schemas/DishType'
+        servings:
+          type: integer
+        instructions:
+          type: string
+
+    RecipeIngredient:
+      type: object
+      properties:
+        id:
+          type: long
+        name:
+          type: string
+        ingredient:
+          $ref: '#/components/schemas/Ingredient'
+        quantity:
+          $ref: '#/components/schemas/Quantity'
+    Ingredient:
+      type: object
+      properties:
+        id:
+          type: long
+        name:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: long
+        name:
+          type: string
+        favoriteRecipes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recipe'
+        createdRecipes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recipe'
+    Quantity:
+      type: object
+      properties:
+        quantityType:
+          $ref: '#/components/schemas/QuantityType'
+        amount:
+          type: double
+        units:
+          type: string
+    DishType:
+      type: string
+      enum:
+        - VEGETARIAN
+        - VEGAN
+        - OTHER
+
+    QuantityType:
+      type: string
+      enum:
+        - KILOGRAMS
+        - GRAMS
+        - LITERS
+        - MILLILITERS
+        - ABSOLUTE
+        - SPOONS
+        - TEASPOONS
+    FavoriteRecipeRequest:
+      type: object
+      properties:
+        userId:
+          type: long
+        recipeId:
+          type: long
+
+    Auth0LoginRequest:
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    Auth0LoginResponse:
+      properties:
+        jwtToken:
+          type: string
+
+

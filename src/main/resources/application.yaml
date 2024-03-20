@@ -1,0 +1,45 @@
+auth0:
+  domain: dev-u0xcicdl675laovx.us.auth0.com
+  client_id: ju3hV7ZFwQJiQaxdCyjUtpcIlZuSwkSI
+  client_secret: 0r2CcTAJYA4r-Sj_W8opCtANPGGGb2Sa5o_i589K0mREkB7FWrZfxD-dXKchXnt8
+  audience: https://recipes/api
+  issuer: https://dev-u0xcicdl675laovx.us.auth0.com/
+
+spring:
+  application:
+    name: TechCaseRTPrep
+  datasource:
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/recipes
+  security:
+    oauth2:
+      client:
+        registration:
+          auth0:
+            client-id: ${auth0.client_id}
+            client-secret: ${auth0.client_secret}
+            scope:
+              - openid
+              - profile
+              - email
+        provider:
+          auth0:
+            issuer-uri: ${auth0.issuer}
+  flyway:
+    placeholders:
+      application-user: recipes
+    url: jdbc:postgresql://localhost:5432/recipes
+    user: admin
+    password: admin
+    out-of-order: true
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+server:
+  port: 9000
+springdoc:
+  version: '@springdoc.version@'
+  swagger-ui:
+    path: /swagger-ui.html
