@@ -11,6 +11,7 @@ then run this application in intellij or use
 ```
 With the optional flag to turn off integration testing
 
+Once docker image of db is running, you can run some http requests under requests folder
 
 ### TODO
 List of things that still need some attention:
